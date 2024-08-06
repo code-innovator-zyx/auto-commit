@@ -173,8 +173,8 @@ impl CommitHandle {
             self.commit_file(formatted_time.as_str())?;
             total_commit += 1;
         }
+        self.push_commits()?;
         println!("[{}] 成功推送 {} 个 commit", date_str, total_commit);
-        self.push_commits(total_commit)?;
         Ok(())
     }
     // 执行commit 指令
@@ -194,10 +194,9 @@ impl CommitHandle {
         Ok(())
     }
 
-    fn push_commits(&self, commit_nums: usize) -> io::Result<()> {
+    fn push_commits(&self) -> io::Result<()> {
         let cmd = "git pull --rebase && git push";
         self.execute_command(cmd)?;
-        println!("成功推送{} 个commit到远程仓库", commit_nums);
         Ok(())
     }
 }
