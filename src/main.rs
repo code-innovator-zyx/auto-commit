@@ -1,12 +1,7 @@
 use auto_commit::CommitHandle;
 use clap::{Arg, Command};
-use std::{env::current_dir, path::PathBuf};
 
 fn main() {
-    // 获取当前工作目录
-    let path_buf = current_dir().unwrap_or_else(|_| PathBuf::from("."));
-    // 使用 to_string_lossy() 生成一个 String
-    let dir = path_buf.to_string_lossy().into_owned(); // 使用 to_string_lossy() 转换为 String
     let matches = Command::new("auto-commit")
         .arg(
             Arg::new("dir")
@@ -54,5 +49,4 @@ fn main() {
     if let Err(e) = handler.run() {
         println!("执行失败, {}", e)
     }
-    // println!("{}", handler)
 }

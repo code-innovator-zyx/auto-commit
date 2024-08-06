@@ -1,8 +1,6 @@
 use std::{
-    env::current_dir,
     fs::File,
     io::{self, Write},
-    path::PathBuf,
     process::Command,
     str::FromStr,
     thread, vec,
@@ -151,10 +149,13 @@ impl CommitHandle {
         // let expression = "0 54 9 * * *";
         let schedule = Schedule::from_str(expression).expect("Failed to parse CRON expression");
         let times = rand::thread_rng().gen_range(self.min_commit..self.max_commit);
+        println!("执行周期性的自动commit任务");
+        println!("cron expression : 【{}】", expression);
         loop {
             let now = Local::now();
             if let Some(next) = schedule.upcoming(Local).take(1).next() {
                 let until_next = next - now;
+                println!("下一次运行时间: [{}]", next);
                 thread::sleep(until_next.to_std().unwrap());
                 {
                     let date = Local::now().format("%Y-%m-%d").to_string();
