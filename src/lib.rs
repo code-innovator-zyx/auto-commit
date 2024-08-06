@@ -116,6 +116,7 @@ impl CommitHandle {
 
     // 执行终端命令
     fn execute_command(&self, cmd: &str) -> io::Result<String> {
+        println!("{}", &self.project_dir);
         let output = Command::new("sh")
             .arg("-c")
             .arg(cmd)
@@ -129,6 +130,7 @@ impl CommitHandle {
                 format!("Command failed: {cmd}\n{stderr}"),
             ));
         }
+        println!("{}",stderr);
         Ok(stdout)
     }
 
