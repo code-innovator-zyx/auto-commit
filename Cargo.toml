@@ -1,0 +1,10 @@
+[package]
+name = "auto_commit"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+chrono = "0.4.38"
+clap = "4.5.13"
+cron = "0.12.1"
+rand = "0.8.5"
