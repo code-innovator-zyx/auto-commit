@@ -18,12 +18,12 @@ pub struct DailyCommit {
 }
 #[derive(Debug)]
 pub struct CommitHandle {
-    pub time_arr: Vec<DailyCommit>,
-    pub project_dir: String,
-    pub commit_msg: String,
-    pub cron_expression: Option<String>,
-    pub min_commit: usize,
-    pub max_commit: usize,
+    time_arr: Vec<DailyCommit>,
+    project_dir: String,
+    commit_msg: String,
+    cron_expression: Option<String>,
+    min_commit: usize,
+    max_commit: usize,
 }
 
 impl CommitHandle {
@@ -137,9 +137,13 @@ impl CommitHandle {
             self.cron_job(expression.as_str())?;
         } else {
             // 一次性任务
+            let mut times = 0;
             for ele in &self.time_arr {
                 self.once_day(ele.commit, &ele.date)?;
+                times += ele.commit
             }
+            self.push_commits()?;
+            println!("总共成功推送 {} 个 commit", times);
         }
         Ok(())
     }
@@ -160,6 +164,8 @@ impl CommitHandle {
                 {
                     let date = Local::now().format("%Y-%m-%d").to_string();
                     self.once_day(times, date.as_str())?;
+                    self.push_commits()?;
+                    println!("[{}] 成功推送 {} 个 commit", date, times);
                 }
             }
         }
@@ -167,15 +173,11 @@ impl CommitHandle {
 
     // 一天的commit 次数提交
     fn once_day(&self, times: usize, date_str: &str) -> io::Result<()> {
-        let mut total_commit = 0;
         for index in 1..times {
             let commit_time = self.rand_daily_time(date_str, times, index);
             let formatted_time = format!("{}T00:00:00Z", commit_time);
             self.commit_file(formatted_time.as_str())?;
-            total_commit += 1;
         }
-        self.push_commits()?;
-        println!("[{}] 成功推送 {} 个 commit", date_str, total_commit);
         Ok(())
     }
     // 执行commit 指令
