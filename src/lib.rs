@@ -116,7 +116,6 @@ impl CommitHandle {
 
     // 执行终端命令
     fn execute_command(&self, cmd: &str) -> io::Result<String> {
-        println!("{}", &self.project_dir);
         let output = Command::new("sh")
             .arg("-c")
             .arg(cmd)
@@ -130,7 +129,6 @@ impl CommitHandle {
                 format!("Command failed: {cmd}\n{stderr}"),
             ));
         }
-        println!("{}",stderr);
         Ok(stdout)
     }
 
@@ -172,11 +170,11 @@ impl CommitHandle {
         for index in 1..times {
             let commit_time = self.rand_daily_time(date_str, times, index);
             let formatted_time = format!("{}T00:00:00Z", commit_time);
-            self.commit_file(formatted_time.as_str());
+            self.commit_file(formatted_time.as_str())?;
             total_commit += 1;
         }
         println!("[{}] 成功推送 {} 个 commit", date_str, total_commit);
-        self.push_commits(total_commit);
+        self.push_commits(total_commit)?;
         Ok(())
     }
     // 执行commit 指令
